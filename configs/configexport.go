@@ -85,3 +85,8 @@ func DownloadConfigFile(fdm connection.Fdm, remote_filename string, local_filena
 		fmt.Printf("Error : %s", err)
 	}
 }
+
+func DeleteConfigExport(fdm connection.Fdm, remote_filename string) {
+	// Deletes the given config file
+	_ = connection.DeleteApi(fdm, "action/configfiles/"+remote_filename)
+}

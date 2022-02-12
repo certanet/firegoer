@@ -160,3 +160,55 @@ func PostApi(fdm Fdm, url string, jsonData []byte) []byte {
 
 	return body
 }
+
+func apiCall(fdm Fdm, url string, method string) []byte {
+	base_url := "https://" + fdm.Host + "/api/fdm/latest/"
+	full_url := base_url + url
+
+	if !fdm.Verify {
+		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	}
+
+	httpClient := http.Client{
+		Timeout: time.Second * 2,
+	}
+
+	req, err := http.NewRequest(method, full_url, nil)
+
+	// TODO check and store access_token for reuse
+	token := getaccesstoken(fdm)
+	bearer := "Bearer " + token
+	req.Header.Set("Authorization", bearer)
+
+	res, err := httpClient.Do(req)
+	if err != nil {
+		fmt.Printf("Error : %s", err)
+	}
+
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
+
+	statusOK := res.StatusCode >= 200 && res.StatusCode < 300
+	if !statusOK {
+		if res.StatusCode == 422 {
+			fmt.Println("Resource does not exist!")
+		} else {
+			fmt.Println("Non-OK HTTP status:", res.StatusCode)
+			panic(res.StatusCode)
+		}
+	}
+
+	body, readErr := ioutil.ReadAll(res.Body)
+	if readErr != nil {
+		log.Fatal(readErr)
+	}
+
+	// fmt.Printf("%s", body)
+
+	return body
+}
+
+func DeleteApi(fdm Fdm, url string) []byte {
+	return apiCall(fdm, url, "DELETE")
+}
