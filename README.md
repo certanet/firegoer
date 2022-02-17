@@ -17,18 +17,18 @@ Import the Fdm type and create an instance, passing in your FTD hostname/IP, pas
 
     import (
         "fmt"
-        "github.com/certanet/firegoer/connection"
-        "github.com/certanet/firegoer/system"
+
+        "github.com/certanet/firegoer/ftd"
     )
 
     func main() {
-        fdm := connection.Fdm{
+        fdm := ftd.Fdm{
             Host:     "192.168.45.45",
             Password: "Admin123",
             Verify:   false,
         }
 
-        hostname := systeminfo.GetHostname(fdm)
+        hostname := fdm.GetHostname()
         fmt.Println(hostname)
     }
 
