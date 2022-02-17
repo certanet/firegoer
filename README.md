@@ -11,7 +11,7 @@ The following versions have been used in development (others should work but YMM
 
 ## Usage
 
-Import the Fdm type and create an instance, passing in your FTD hostname/IP, password and ignoring SSL verification (if using an untrusted/self-signed cert). Then call any of the available functions, such as getting and printing the hostname:
+Import the ftd package and call the FdmConnection function to create a pointer to an Fdm, passing in your FTD hostname/IP, password and ignoring SSL verification (if using an untrusted/self-signed cert). Then call any of the available methods, such as getting and printing the hostname:
 
     package main
 
@@ -22,11 +22,7 @@ Import the Fdm type and create an instance, passing in your FTD hostname/IP, pas
     )
 
     func main() {
-        fdm := ftd.Fdm{
-            Host:     "192.168.45.45",
-            Password: "Admin123",
-            Verify:   false,
-        }
+        fdm := ftd.FdmConnection("192.168.45.45", "Admin123", false)
 
         hostname := fdm.GetHostname()
         fmt.Println(hostname)
