@@ -9,7 +9,7 @@ type ApiVersion struct {
 	Supported_Versions []string `json:"supportedVersions"`
 }
 
-func (fdm Fdm) GetApiVers() ApiVersion {
+func (fdm *Fdm) GetApiVers() ApiVersion {
 	var vers ApiVersion
 
 	body := fdm.GetApi("versions")

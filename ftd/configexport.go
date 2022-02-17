@@ -25,7 +25,7 @@ type ConfigExportStatus struct {
 	Status    string `json:"status"`
 }
 
-func (fdm Fdm) ExportConfig(config_name string) ConfigExportResp {
+func (fdm *Fdm) ExportConfig(config_name string) ConfigExportResp {
 	// Submits a ConfigExport job
 	var export ConfigExportResp
 
@@ -47,7 +47,7 @@ func (fdm Fdm) ExportConfig(config_name string) ConfigExportResp {
 	return export
 }
 
-func (fdm Fdm) GetConfigExportStatus(export_job_id string) ConfigExportStatus {
+func (fdm *Fdm) GetConfigExportStatus(export_job_id string) ConfigExportStatus {
 	// Gets the status of the given ConfigExport job
 	var status ConfigExportStatus
 
@@ -60,7 +60,7 @@ func (fdm Fdm) GetConfigExportStatus(export_job_id string) ConfigExportStatus {
 	return status
 }
 
-func (fdm Fdm) DownloadConfigFile(remote_filename string, local_filename string) {
+func (fdm *Fdm) DownloadConfigFile(remote_filename string, local_filename string) {
 	// Downloads the given remote exported config file
 
 	// Create the zip file locally
@@ -85,7 +85,7 @@ func (fdm Fdm) DownloadConfigFile(remote_filename string, local_filename string)
 	}
 }
 
-func (fdm Fdm) DeleteConfigExport(remote_filename string) {
+func (fdm *Fdm) DeleteConfigExport(remote_filename string) {
 	// Deletes the given config file
 	_ = fdm.DeleteApi("action/configfiles/"+remote_filename, nil)
 }

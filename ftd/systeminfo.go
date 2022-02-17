@@ -21,7 +21,7 @@ type SystemInfo struct {
 	Serial_Number string `json:"serialNumber"`
 }
 
-func (fdm Fdm) GetHostname() string {
+func (fdm *Fdm) GetHostname() string {
 	var items HostnameItems
 
 	resp := fdm.GetApi("devicesettings/default/devicehostnames")
@@ -34,7 +34,7 @@ func (fdm Fdm) GetHostname() string {
 	return items.Items[0].Hostname
 }
 
-func (fdm Fdm) GetSystemInfo() SystemInfo {
+func (fdm *Fdm) GetSystemInfo() SystemInfo {
 	var info SystemInfo
 
 	resp := fdm.GetApi("/operational/systeminfo/default")

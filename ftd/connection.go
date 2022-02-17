@@ -17,7 +17,7 @@ type Fdm struct {
 	Verify   bool
 }
 
-func CreateFdmConnection(host, password string, verify bool) *Fdm {
+func FdmConnection(host, password string, verify bool) *Fdm {
 	return &Fdm{
 		Host:     host,
 		Password: password,
@@ -176,7 +176,7 @@ func (fdm *Fdm) GetApi(url string) []byte {
 }
 
 func (fdm *Fdm) PostApi(url string, reqData interface{}) []byte {
-	// Returns the body of the GET response
+	// Returns the body of the POST response
 	return fdm.apiCall(url, "POST", reqData)
 }
 
