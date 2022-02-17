@@ -1,20 +1,18 @@
-package apiversions
+package ftd
 
 import (
 	"encoding/json"
 	"log"
-
-	"github.com/certanet/firegoer/connection"
 )
 
 type ApiVersion struct {
 	Supported_Versions []string `json:"supportedVersions"`
 }
 
-func GetApiVers(fdm connection.Fdm) ApiVersion {
+func (fdm Fdm) GetApiVers() ApiVersion {
 	var vers ApiVersion
 
-	body := connection.GetApi(fdm, "versions")
+	body := fdm.GetApi("versions")
 
 	jsonErr := json.Unmarshal(body, &vers)
 	if jsonErr != nil {

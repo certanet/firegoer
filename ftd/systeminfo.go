@@ -1,10 +1,8 @@
-package systeminfo
+package ftd
 
 import (
 	"encoding/json"
 	"log"
-
-	"github.com/certanet/firegoer/connection"
 )
 
 type HostnameItems struct {
@@ -23,10 +21,10 @@ type SystemInfo struct {
 	Serial_Number string `json:"serialNumber"`
 }
 
-func GetHostname(fdm connection.Fdm) string {
+func (fdm Fdm) GetHostname() string {
 	var items HostnameItems
 
-	resp := connection.GetApi(fdm, "devicesettings/default/devicehostnames")
+	resp := fdm.GetApi("devicesettings/default/devicehostnames")
 
 	jsonErr := json.Unmarshal(resp, &items)
 	if jsonErr != nil {
@@ -36,10 +34,10 @@ func GetHostname(fdm connection.Fdm) string {
 	return items.Items[0].Hostname
 }
 
-func GetSystemInfo(fdm connection.Fdm) SystemInfo {
+func (fdm Fdm) GetSystemInfo() SystemInfo {
 	var info SystemInfo
 
-	resp := connection.GetApi(fdm, "/operational/systeminfo/default")
+	resp := fdm.GetApi("/operational/systeminfo/default")
 
 	jsonErr := json.Unmarshal(resp, &info)
 	if jsonErr != nil {

@@ -1,4 +1,4 @@
-package configexport
+package ftd
 
 import (
 	"bytes"
@@ -7,8 +7,6 @@ import (
 	"io"
 	"log"
 	"os"
-
-	"github.com/certanet/firegoer/connection"
 )
 
 type ConfigExportReq struct {
@@ -27,19 +25,20 @@ type ConfigExportStatus struct {
 	Status    string `json:"status"`
 }
 
-func ExportConfig(fdm connection.Fdm, config_name string) ConfigExportResp {
+func (fdm Fdm) ExportConfig(config_name string) ConfigExportResp {
 	// Submits a ConfigExport job
 	var export ConfigExportResp
 
 	body := ConfigExportReq{
 		File_Name:    config_name,
 		Dont_Encrypt: true,
-		Type:         "scheduleconfigexport"}
+		Type:         "scheduleconfigexport",
+	}
 
 	payloadBuf := new(bytes.Buffer)
 	json.NewEncoder(payloadBuf).Encode(body)
 
-	resp := connection.PostApi(fdm, "action/configexport", payloadBuf.Bytes())
+	resp := fdm.PostApi("action/configexport", payloadBuf.Bytes())
 
 	jsonErr := json.Unmarshal(resp, &export)
 	if jsonErr != nil {
@@ -48,11 +47,11 @@ func ExportConfig(fdm connection.Fdm, config_name string) ConfigExportResp {
 	return export
 }
 
-func GetConfigExportStatus(fdm connection.Fdm, export_job_id string) ConfigExportStatus {
+func (fdm Fdm) GetConfigExportStatus(export_job_id string) ConfigExportStatus {
 	// Gets the status of the given ConfigExport job
 	var status ConfigExportStatus
 
-	resp := connection.GetApi(fdm, "jobs/configexportstatus/"+export_job_id)
+	resp := fdm.GetApi("jobs/configexportstatus/" + export_job_id)
 
 	jsonErr := json.Unmarshal(resp, &status)
 	if jsonErr != nil {
@@ -61,7 +60,7 @@ func GetConfigExportStatus(fdm connection.Fdm, export_job_id string) ConfigExpor
 	return status
 }
 
-func DownloadConfigFile(fdm connection.Fdm, remote_filename string, local_filename string) {
+func (fdm Fdm) DownloadConfigFile(remote_filename string, local_filename string) {
 	// Downloads the given remote exported config file
 
 	// Create the zip file locally
@@ -74,7 +73,7 @@ func DownloadConfigFile(fdm connection.Fdm, remote_filename string, local_filena
 	dl_url := "action/downloadconfigfile/" + remote_filename
 
 	// Get the http.Response without reading it's contents and close when done
-	res := connection.GetApiNoRead(fdm, dl_url)
+	res := fdm.GetApiNoRead(dl_url)
 	if res.Body != nil {
 		defer res.Body.Close()
 	}
@@ -86,7 +85,7 @@ func DownloadConfigFile(fdm connection.Fdm, remote_filename string, local_filena
 	}
 }
 
-func DeleteConfigExport(fdm connection.Fdm, remote_filename string) {
+func (fdm Fdm) DeleteConfigExport(remote_filename string) {
 	// Deletes the given config file
-	_ = connection.DeleteApi(fdm, "action/configfiles/"+remote_filename)
+	_ = fdm.DeleteApi("action/configfiles/"+remote_filename, nil)
 }
